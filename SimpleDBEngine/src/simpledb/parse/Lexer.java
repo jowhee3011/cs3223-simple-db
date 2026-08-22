@@ -36,6 +36,11 @@ public class Lexer {
       return d == (char)tok.ttype;
    }
    
+   public boolean matchOperator() {
+      char c = (char) tok.ttype;
+      return c=='=' || c=='<' || c=='>';
+   }
+   
    /**
     * Returns true if the current token is an integer.
     * @return true if the current token is an integer
@@ -82,6 +87,21 @@ public class Lexer {
          throw new BadSyntaxException();
       nextToken();
    }
+   
+    public String eatOperator() {
+	   char first = (char) tok.ttype;
+	   nextToken();
+	   
+	   if ((first=='<' || first=='>') && matchDelim('=')) {
+	      nextToken();
+	      return first + "=";
+	   }
+	   if (first=='<' && matchDelim('>')) {
+	      nextToken();
+	      return "<>";
+	   }
+	   return Character.toString(first);   // single-char operator: =, <, >
+    }
    
    /**
     * Throws an exception if the current token is not 
